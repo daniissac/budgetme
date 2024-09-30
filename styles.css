@@ -39,12 +39,12 @@ button:hover {
     background-color: #45a049;
 }
 
-#transaction-list {
+#transaction-list, #category-list {
     list-style-type: none;
     padding: 0;
 }
 
-#transaction-list li {
+#transaction-list li, #category-list li {
     background-color: #f9f9f9;
     margin-bottom: 5px;
     padding: 10px;
