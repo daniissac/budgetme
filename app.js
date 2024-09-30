@@ -113,8 +113,7 @@ function updateTrendChart() {
 function setupEventListeners() {
     document.getElementById('add-transaction').addEventListener('click', addTransaction);
     document.getElementById('set-goal').addEventListener('click', setBudgetGoal);
-    document.getElementById('export-btn').addEventListener('click', exportData);
-    document.getElementById('import-btn').addEventListener('click', importData);
+    document.getElementById('export-btn').addEventListener('click', exportAsPDF);
     document.getElementById('search').addEventListener('input', searchTransactions);
     document.getElementById('filter-category').addEventListener('change', filterTransactions);
     document.getElementById('add-category').addEventListener('click', addCategory);
