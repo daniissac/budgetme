@@ -118,7 +118,7 @@ function updateTrendChart() {
 function setupEventListeners() {
     document.getElementById('add-transaction').addEventListener('click', addTransaction);
     document.getElementById('set-goal').addEventListener('click', setBudgetGoal);
-    document.getElementById('export-btn').addEventListener('click', exportAsPDF);
+    document.getElementById('export-btn').addEventListener('click', exportData);
     document.getElementById('search').addEventListener('input', searchTransactions);
     document.getElementById('filter-category').addEventListener('change', filterTransactions);
     document.getElementById('add-category').addEventListener('click', addCategory);
@@ -213,13 +213,13 @@ function setupEventListeners() {
     document.getElementById('search').addEventListener('input', searchTransactions);
     document.getElementById('filter-category').addEventListener('change', filterTransactions);
     document.getElementById('add-category').addEventListener('click', addCategory);
-    document.getElementById('export-btn').addEventListener('click', exportAsPDF);
+    document.getElementById('export-btn').addEventListener('click', exportData);
 }
-
-function exportAsPDF() {
+function exportData() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const balance = transactions.reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
 
+    const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
     // Add title
@@ -246,23 +246,9 @@ function exportAsPDF() {
         columnStyles: { 3: { halign: 'right' } }
     });
     
-    // Add charts
-    const expenseChartCanvas = document.getElementById('expense-chart');
-    const trendChartCanvas = document.getElementById('trend-chart');
-    
-    const expenseChartImage = expenseChartCanvas.toDataURL('image/png');
-    const trendChartImage = trendChartCanvas.toDataURL('image/png');
-    
-    doc.addPage();
-    doc.text('Expense by Category', 105, 15, null, null, 'center');
-    doc.addImage(expenseChartImage, 'PNG', 15, 20, 180, 100);
-    
-    doc.addPage();
-    doc.text('Spending Trend', 105, 15, null, null, 'center');
-    doc.addImage(trendChartImage, 'PNG', 15, 20, 180, 100);
-    
     // Save the PDF
     doc.save('BudgetMe_Report.pdf');
+}
 }function searchTransactions() {
     const searchTerm = document.getElementById('search').value.toLowerCase();
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
