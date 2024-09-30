@@ -1,69 +1,54 @@
-// Initialize the app
+let categories = JSON.parse(localStorage.getItem('categories')) || ['Food', 'Transport', 'Entertainment', 'Bills', 'Other'];
+
 function initApp() {
     loadTransactions();
     updateBalance();
     updateCharts();
     setupEventListeners();
+    updateCategoryDropdowns();
+    displayCategories();
+    updateGoalProgress();
 }
 
-// Load transactions from localStorage
 function loadTransactions() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const transactionList = document.getElementById('transaction-list');
     transactionList.innerHTML = '';
     transactions.forEach(transaction => {
         const li = document.createElement('li');
-        li.textContent = `${transaction.description} - ${transaction.amount} ${transaction.currency} (${transaction.category}) - ${transaction.date}`;
+        li.textContent = `${transaction.description} - ₹${transaction.amount} (${transaction.category}) - ${transaction.date}`;
         transactionList.appendChild(li);
     });
 }
 
-// Update balance
 function updateBalance() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    const balance = transactions.reduce((total, transaction) => {
-        const amount = parseFloat(transaction.amount);
-        return transaction.currency === 'INR' ? total + amount : total + convertToINR(amount, transaction.currency);
-    }, 0);
+    const balance = transactions.reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
     document.getElementById('balance-amount').textContent = `₹${balance.toFixed(2)}`;
 }
 
-// Convert currency to INR
-function convertToINR(amount, fromCurrency) {
-    // For simplicity, using fixed exchange rates. In a real app, you'd use an API for live rates.
-    const rates = {
-        USD: 75,
-        EUR: 85,
-        GBP: 95,
-        INR: 1
-    };
-    return amount * rates[fromCurrency];
-}
-
-// Update charts
 function updateCharts() {
     updateExpenseChart();
     updateTrendChart();
 }
 
-// Update expense chart
 function updateExpenseChart() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    const categories = {};
+    const categoryTotals = {};
     transactions.forEach(transaction => {
-        if (!categories[transaction.category]) {
-            categories[transaction.category] = 0;
+        if (!categoryTotals[transaction.category]) {
+            categoryTotals[transaction.category] = 0;
         }
-        categories[transaction.category] += parseFloat(transaction.amount);
+        categoryTotals[transaction.category] += parseFloat(transaction.amount);
     });
 
     const ctx = document.getElementById('expense-chart').getContext('2d');
     new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: Object.keys(categories),
+            labels: Object.keys(categoryTotals),
             datasets: [{
-                data: Object.values(categories),
+                data: Object.values(categoryTotals),
                 backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
             }]
         },
@@ -77,7 +62,6 @@ function updateExpenseChart() {
     });
 }
 
-// Update trend chart
 function updateTrendChart() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const dailyTotals = {};
@@ -118,7 +102,6 @@ function updateTrendChart() {
     });
 }
 
-// Setup event listeners
 function setupEventListeners() {
     document.getElementById('add-transaction').addEventListener('click', addTransaction);
     document.getElementById('set-goal').addEventListener('click', setBudgetGoal);
@@ -126,15 +109,14 @@ function setupEventListeners() {
     document.getElementById('import-btn').addEventListener('click', importData);
     document.getElementById('search').addEventListener('input', searchTransactions);
     document.getElementById('filter-category').addEventListener('change', filterTransactions);
+    document.getElementById('add-category').addEventListener('click', addCategory);
 }
 
-// Add transaction
 function addTransaction() {
     const description = document.getElementById('description').value;
     const amount = document.getElementById('amount').value;
     const date = document.getElementById('date').value;
     const category = document.getElementById('category').value;
-    const currency = document.getElementById('currency').value;
     const recurring = document.getElementById('recurring').checked;
 
     if (!description || !amount || !date || !category) {
@@ -142,7 +124,7 @@ function addTransaction() {
         return;
     }
 
-    const transaction = { description, amount, date, category, currency, recurring };
+    const transaction = { description, amount, date, category, recurring };
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     transactions.push(transaction);
     localStorage.setItem('transactions', JSON.stringify(transactions));
@@ -150,20 +132,18 @@ function addTransaction() {
     loadTransactions();
     updateBalance();
     updateCharts();
+    updateGoalProgress();
     resetForm();
 }
 
-// Reset form
 function resetForm() {
     document.getElementById('description').value = '';
     document.getElementById('amount').value = '';
     document.getElementById('date').value = '';
     document.getElementById('category').value = '';
-    document.getElementById('currency').value = 'INR';
     document.getElementById('recurring').checked = false;
 }
 
-// Set budget goal
 function setBudgetGoal() {
     const goalAmount = document.getElementById('goal-amount').value;
     if (!goalAmount) {
@@ -174,7 +154,6 @@ function setBudgetGoal() {
     updateGoalProgress();
 }
 
-// Update goal progress
 function updateGoalProgress() {
     const goalAmount = localStorage.getItem('budgetGoal');
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
@@ -189,7 +168,6 @@ function updateGoalProgress() {
     `;
 }
 
-// Export data
 function exportData() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const dataStr = JSON.stringify(transactions);
@@ -202,7 +180,6 @@ function exportData() {
     linkElement.click();
 }
 
-// Import data
 function importData() {
     const file = document.getElementById('import-file').files[0];
     const reader = new FileReader();
@@ -212,11 +189,11 @@ function importData() {
         loadTransactions();
         updateBalance();
         updateCharts();
+        updateGoalProgress();
     };
     reader.readAsText(file);
 }
 
-// Search transactions
 function searchTransactions() {
     const searchTerm = document.getElementById('search').value.toLowerCase();
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
@@ -227,7 +204,6 @@ function searchTransactions() {
     displayFilteredTransactions(filteredTransactions);
 }
 
-// Filter transactions
 function filterTransactions() {
     const category = document.getElementById('filter-category').value;
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
@@ -235,21 +211,63 @@ function filterTransactions() {
     displayFilteredTransactions(filteredTransactions);
 }
 
-// Display filtered transactions
 function displayFilteredTransactions(transactions) {
     const transactionList = document.getElementById('transaction-list');
     transactionList.innerHTML = '';
     transactions.forEach(transaction => {
         const li = document.createElement('li');
-        li.textContent = `${transaction.description} - ${transaction.amount} ${transaction.currency} (${transaction.category}) - ${transaction.date}`;
+        li.textContent = `${transaction.description} - ₹${transaction.amount} (${transaction.category}) - ${transaction.date}`;
         transactionList.appendChild(li);
     });
 }
 
-// Initialize the app when the page loads
+function updateCategoryDropdowns() {
+    const categorySelects = document.querySelectorAll('#category, #filter-category');
+    categorySelects.forEach(select => {
+        select.innerHTML = '<option value="">Select Category</option>';
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.toLowerCase();
+            option.textContent = category;
+            select.appendChild(option);
+        });
+    });
+}
+
+function displayCategories() {
+    const categoryList = document.getElementById('category-list');
+    categoryList.innerHTML = '';
+    categories.forEach(category => {
+        const li = document.createElement('li');
+        li.textContent = category;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => deleteCategory(category);
+        li.appendChild(deleteBtn);
+        categoryList.appendChild(li);
+    });
+}
+
+function addCategory() {
+    const newCategory = document.getElementById('new-category').value.trim();
+    if (newCategory && !categories.includes(newCategory)) {
+        categories.push(newCategory);
+        localStorage.setItem('categories', JSON.stringify(categories));
+        updateCategoryDropdowns();
+        displayCategories();
+        document.getElementById('new-category').value = '';
+    }
+}
+
+function deleteCategory(category) {
+    categories = categories.filter(c => c !== category);
+    localStorage.setItem('categories', JSON.stringify(categories));
+    updateCategoryDropdowns();
+    displayCategories();
+}
+
 window.onload = initApp;
 
-// Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
