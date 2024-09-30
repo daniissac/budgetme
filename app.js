@@ -176,33 +176,63 @@ function updateGoalProgress() {
     `;
 }
 
-function exportData() {
+function setupEventListeners() {
+    document.getElementById('add-transaction').addEventListener('click', addTransaction);
+    document.getElementById('set-goal').addEventListener('click', setBudgetGoal);
+    document.getElementById('search').addEventListener('input', searchTransactions);
+    document.getElementById('filter-category').addEventListener('change', filterTransactions);
+    document.getElementById('add-category').addEventListener('click', addCategory);
+    document.getElementById('export-btn').addEventListener('click', exportAsPDF);
+}
+
+function exportAsPDF() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    const dataStr = JSON.stringify(transactions);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = 'budget_data.json';
+    const balance = transactions.reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
 
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-}
-
-function importData() {
-    const file = document.getElementById('import-file').files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const transactions = JSON.parse(e.target.result);
-        localStorage.setItem('transactions', JSON.stringify(transactions));
-        loadTransactions();
-        updateBalance();
-        updateCharts();
-        updateGoalProgress();
-    };
-    reader.readAsText(file);
-}
-
-function searchTransactions() {
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(18);
+    doc.text('BudgetMe Report', 105, 15, null, null, 'center');
+    
+    // Add balance
+    doc.setFontSize(14);
+    doc.text(`Current Balance: ₹${balance.toFixed(2)}`, 20, 30);
+    
+    // Add transactions table
+    doc.setFontSize(12);
+    doc.text('Transactions:', 20, 40);
+    
+    const headers = ['Date', 'Description', 'Category', 'Amount'];
+    const data = transactions.map(t => [t.date, t.description, t.category, `₹${parseFloat(t.amount).toFixed(2)}`]);
+    
+    doc.autoTable({
+        startY: 45,
+        head: [headers],
+        body: data,
+        theme: 'grid',
+        styles: { fontSize: 8 },
+        columnStyles: { 3: { halign: 'right' } }
+    });
+    
+    // Add charts
+    const expenseChartCanvas = document.getElementById('expense-chart');
+    const trendChartCanvas = document.getElementById('trend-chart');
+    
+    const expenseChartImage = expenseChartCanvas.toDataURL('image/png');
+    const trendChartImage = trendChartCanvas.toDataURL('image/png');
+    
+    doc.addPage();
+    doc.text('Expense by Category', 105, 15, null, null, 'center');
+    doc.addImage(expenseChartImage, 'PNG', 15, 20, 180, 100);
+    
+    doc.addPage();
+    doc.text('Spending Trend', 105, 15, null, null, 'center');
+    doc.addImage(trendChartImage, 'PNG', 15, 20, 180, 100);
+    
+    // Save the PDF
+    doc.save('BudgetMe_Report.pdf');
+}function searchTransactions() {
     const searchTerm = document.getElementById('search').value.toLowerCase();
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const filteredTransactions = transactions.filter(transaction => 
