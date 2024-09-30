@@ -1,6 +1,6 @@
 {
-    "name": "Budget Tracker",
-    "short_name": "Budget",
+    "name": "BudgetMe!",
+    "short_name": "BudgetMe!",
     "start_url": "/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
