@@ -1,4 +1,4 @@
-const CACHE_NAME = 'budget-tracker-v1';
+const CACHE_NAME = 'budgetme-v1';
 const urlsToCache = [
     '/',
     '/index.html',
