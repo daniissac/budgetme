@@ -17,25 +17,17 @@
         <div id="transaction-form">
             <h3>Add Transaction</h3>
             <input type="text" id="description" placeholder="Description" required>
-            <input type="number" id="amount" placeholder="Amount" required>
+            <input type="number" id="amount" placeholder="Amount (₹)" required>
             <input type="date" id="date" required>
-            <select id="category">
-                <option value="">Select Category</option>
-                <option value="food">Food</option>
-                <option value="transport">Transport</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="bills">Bills</option>
-                <option value="other">Other</option>
-            </select>
-
+            <select id="category" required></select>
             <label>
                 <input type="checkbox" id="recurring"> Recurring
             </label>
             <button id="add-transaction">Add Transaction</button>
         </div>
         <div id="budget-goals">
-            <h3>Budget Goals</h3>
-            <input type="number" id="goal-amount" placeholder="Goal Amount">
+            <h3>Budget Goal</h3>
+            <input type="number" id="goal-amount" placeholder="Goal Amount (₹)">
             <button id="set-goal">Set Goal</button>
             <div id="goal-progress"></div>
         </div>
@@ -43,11 +35,6 @@
             <input type="text" id="search" placeholder="Search transactions">
             <select id="filter-category">
                 <option value="">All Categories</option>
-                <option value="food">Food</option>
-                <option value="transport">Transport</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="bills">Bills</option>
-                <option value="other">Other</option>
             </select>
         </div>
         <div id="transactions">
@@ -57,6 +44,12 @@
         <div id="charts">
             <canvas id="expense-chart"></canvas>
             <canvas id="trend-chart"></canvas>
+        </div>
+        <div id="category-management">
+            <h3>Manage Categories</h3>
+            <input type="text" id="new-category" placeholder="New Category">
+            <button id="add-category">Add Category</button>
+            <ul id="category-list"></ul>
         </div>
         <div id="import-export">
             <button id="export-btn">Export Data</button>
