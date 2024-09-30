@@ -249,7 +249,7 @@ function exportData() {
     // Save the PDF
     doc.save('BudgetMe_Report.pdf');
 }
-}function searchTransactions() {
+function searchTransactions() {
     const searchTerm = document.getElementById('search').value.toLowerCase();
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const filteredTransactions = transactions.filter(transaction => 
