@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BudgetMe!</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="BudgetMe! - A simple and effective budgeting app to manage your finances.">
+    <meta property="og:title" content="BudgetMe!">
+    <meta property="og:description" content="Manage your finances with ease using BudgetMe!">
+    <meta property="og:type" content="website">
+    <title>BudgetMe!</title>    <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
@@ -26,51 +29,48 @@
             <li><a href="#category-management"><i class="fas fa-tags"></i> Categories</a></li>
         </ul>
     </nav>
-    <div id="app">
-        <div id="balance">
+    <main id="app">
+        <section id="balance">
             <h2>Balance: <span id="balance-amount">₹0.00</span></h2>
-        </div>
-        <div id="transaction-form">
+        </section>
+        <section id="transaction-form">
             <h3>Add Transaction</h3>
             <input type="text" id="description" placeholder="Description" required>
             <input type="number" id="amount" placeholder="Amount (₹)" required>
             <input type="date" id="date" required>
             <select id="category" required></select>
-            <label>
-                <input type="checkbox" id="recurring"> Recurring
-            </label>
             <button id="add-transaction">Add Transaction</button>
-        </div>
-        <div id="budget-goals">
+        </section>
+        <section id="budget-goals">
             <h3>Budget Goal</h3>
             <input type="number" id="goal-amount" placeholder="Goal Amount (₹)">
             <button id="set-goal">Set Goal</button>
             <div id="goal-progress"></div>
-        </div>
-        <div id="search-filter">
+        </section>
+        <section id="search-filter">
             <input type="text" id="search" placeholder="Search transactions">
             <select id="filter-category">
                 <option value="">All Categories</option>
             </select>
-        </div>
-        <div id="transactions">
+        </section>
+        <section id="transactions">
             <h3>Transactions</h3>
             <ul id="transaction-list"></ul>
-        </div>
-        <div id="charts">
+        </section>
+        <section id="charts">
             <canvas id="expense-chart"></canvas>
             <canvas id="trend-chart"></canvas>
-        </div>
-        <div id="category-management">
+        </section>
+        <section id="category-management">
             <h3>Manage Categories</h3>
             <input type="text" id="new-category" placeholder="New Category">
             <button id="add-category">Add Category</button>
             <ul id="category-list"></ul>
-        </div>
-        <div id="import-export">
+        </section>
+        <section id="import-export">
             <button id="export-btn">Export Data</button>
-        </div>
-    </div>
+        </section>
+    </main>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>

@@ -19,7 +19,13 @@ function initApp() {
 }
 
 function loadTransactions() {
-    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    let transactions;
+    try {
+        transactions = JSON.parse(localStorage.getItem(TRANSACTIONS_KEY)) || [];
+    } catch (error) {
+        console.error('Error parsing transactions:', error);
+        transactions = [];
+    }
     const transactionList = document.getElementById('transaction-list');
     transactionList.innerHTML = '';
     transactions.forEach(transaction => {
@@ -28,7 +34,6 @@ function loadTransactions() {
         transactionList.appendChild(li);
     });
 }
-
 function updateBalance() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const balance = transactions.reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
@@ -119,23 +124,51 @@ function setupEventListeners() {
     document.getElementById('add-category').addEventListener('click', addCategory);
 }
 
-function addTransaction() {
-    const description = document.getElementById('description').value;
-    const amount = document.getElementById('amount').value;
-    const date = document.getElementById('date').value;
-    const category = document.getElementById('category').value;
-    const recurring = document.getElementById('recurring').checked;
+const TRANSACTIONS_KEY = 'transactions';
 
-    if (!description || !amount || !date || !category) {
-        alert('Please fill in all fields');
+function addTransaction() {
+    const description = document.getElementById('description').value.trim();
+    const amount = document.getElementById('amount').value.trim();
+    const date = document.getElementById('date').value.trim();
+    const category = document.getElementById('category').value.trim();
+
+    if (!validateInputs(description, amount, date, category)) {
         return;
     }
 
-    const transaction = { description, amount, date, category, recurring };
-    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    transactions.push(transaction);
-    localStorage.setItem('transactions', JSON.stringify(transactions));
+    const transaction = { description, amount: parseFloat(amount), date, category };
+    saveTransaction(transaction);
 
+    updateUI();
+}
+
+function validateInputs(description, amount, date, category) {
+    if (description === '' || amount === '' || date === '' || category === '') {
+        alert('Please fill in all fields');
+        return false;
+    }
+
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        alert('Please enter a valid positive number for the amount');
+        return false;
+    }
+
+    return true;
+}
+
+function saveTransaction(transaction) {
+    try {
+        const transactions = JSON.parse(localStorage.getItem(TRANSACTIONS_KEY)) || [];
+        transactions.push(transaction);
+        localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(transactions));
+    } catch (error) {
+        console.error('Error saving transaction:', error);
+        alert('An error occurred while saving the transaction. Please try again.');
+    }
+}
+
+function updateUI() {
     loadTransactions();
     updateBalance();
     updateCharts();
@@ -148,7 +181,6 @@ function resetForm() {
     document.getElementById('amount').value = '';
     document.getElementById('date').value = '';
     document.getElementById('category').value = '';
-    document.getElementById('recurring').checked = false;
 }
 
 function setBudgetGoal() {
