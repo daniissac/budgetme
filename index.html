@@ -7,10 +7,26 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <header>
         <h1>BudgetMe!</h1>
+        <button id="menu-toggle" class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+    <nav id="main-nav" class="main-nav">
+        <ul>
+            <li><a href="#transaction-form"><i class="fas fa-plus-circle"></i> Add Transaction</a></li>
+            <li><a href="#budget-goals"><i class="fas fa-bullseye"></i> Budget Goals</a></li>
+            <li><a href="#transactions"><i class="fas fa-list"></i> Transactions</a></li>
+            <li><a href="#charts"><i class="fas fa-chart-pie"></i> Charts</a></li>
+            <li><a href="#category-management"><i class="fas fa-tags"></i> Categories</a></li>
+        </ul>
+    </nav>
+    <div id="app">
         <div id="balance">
             <h2>Balance: <span id="balance-amount">₹0.00</span></h2>
         </div>
