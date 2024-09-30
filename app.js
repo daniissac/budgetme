@@ -1,3 +1,4 @@
+console.log('Welcome to BudgetMe!');
 let categories = JSON.parse(localStorage.getItem('categories')) || ['Food', 'Transport', 'Entertainment', 'Bills', 'Other'];
 
 function initApp() {
