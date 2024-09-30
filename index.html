@@ -3,83 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Budget Tracker</title>
-    <link rel="manifest" href="manifest.json">
+    <title>Budget Tracker</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png" type="image/png">
 </head>
 <body>
     <div id="app">
-        <h1>Enhanced Budget Tracker</h1>
-        <div>
-            <input type="text" id="description" placeholder="Description">
-            <input type="number" id="amount" placeholder="Amount">
-            <select id="type">
-                <option value="income">Income</option>
-                <option value="expense">Expense</option>
-            </select>
-            <input type="date" id="date">
+        <h1>Budget Tracker</h1>
+        <div id="balance">
+            <h2>Balance: <span id="balance-amount">₹0.00</span></h2>
+        </div>
+        <div id="transaction-form">
+            <h3>Add Transaction</h3>
+            <input type="text" id="description" placeholder="Description" required>
+            <input type="number" id="amount" placeholder="Amount" required>
+            <input type="date" id="date" required>
             <select id="category">
+                <option value="">Select Category</option>
                 <option value="food">Food</option>
                 <option value="transport">Transport</option>
-                <option value="utilities">Utilities</option>
                 <option value="entertainment">Entertainment</option>
+                <option value="bills">Bills</option>
                 <option value="other">Other</option>
             </select>
             <select id="currency">
-                <option value="INR" selected>INR</option>
+                <option value="INR">INR</option>
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
                 <option value="GBP">GBP</option>
             </select>
+            <label>
+                <input type="checkbox" id="recurring"> Recurring
+            </label>
             <button id="add-transaction">Add Transaction</button>
         </div>
-
-        <div>
-            <h2>Set Budget Goal</h2>
-            <input type="number" id="budget-goal" placeholder="Monthly Budget Goal">
-            <button id="set-budget-goal">Set Goal</button>
+        <div id="budget-goals">
+            <h3>Budget Goals</h3>
+            <input type="number" id="goal-amount" placeholder="Goal Amount">
+            <button id="set-goal">Set Goal</button>
+            <div id="goal-progress"></div>
         </div>
-
-        <div>
-            <h2>Add Recurring Transaction</h2>
-            <input type="text" id="recurring-description" placeholder="Description">
-            <input type="number" id="recurring-amount" placeholder="Amount">
-            <select id="recurring-type">
-                <option value="income">Income</option>
-                <option value="expense">Expense</option>
+        <div id="search-filter">
+            <input type="text" id="search" placeholder="Search transactions">
+            <select id="filter-category">
+                <option value="">All Categories</option>
+                <option value="food">Food</option>
+                <option value="transport">Transport</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="bills">Bills</option>
+                <option value="other">Other</option>
             </select>
-            <select id="recurring-frequency">
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-            </select>
-            <button id="add-recurring-transaction">Add Recurring Transaction</button>
         </div>
-
-        <div id="balance"></div>
-        <div id="budget-progress"></div>
-
-        <input type="text" id="search" placeholder="Search transactions">
-        <div id="transactions"></div>
-
+        <div id="transactions">
+            <h3>Transactions</h3>
+            <ul id="transaction-list"></ul>
+        </div>
         <div id="charts">
-            <div class="chart-container">
-                <canvas id="bar-chart"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="pie-chart"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="line-chart"></canvas>
-            </div>
+            <canvas id="expense-chart"></canvas>
+            <canvas id="trend-chart"></canvas>
         </div>
-
-        <button id="export-data">Export Data</button>
-        <input type="file" id="import-file" accept=".csv,.json">
+        <div id="import-export">
+            <button id="export-btn">Export Data</button>
+            <input type="file" id="import-file" accept=".json,.csv">
+            <button id="import-btn">Import Data</button>
+        </div>
     </div>
-
-    <script type="module" src="js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
