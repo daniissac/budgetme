@@ -6,7 +6,6 @@ A simple, mobile-friendly budget tracker web application hosted on GitHub Pages.
 
 - **Transaction Management**: Add, view, and manage financial transactions
 - **Customizable Categories**: Create, edit, and delete transaction categories
-- **Multi-Currency Support**: Track expenses in multiple currencies (default: INR)
 - **Budget Goals**: Set and monitor progress towards financial goals
 - **Recurring Transactions**: Set up and manage recurring income or expenses
 - **Search and Filter**: Easily find and organize your transactions
