@@ -19,18 +19,12 @@ function initApp() {
 }
 
 function loadTransactions() {
-    let transactions;
-    try {
-        transactions = JSON.parse(localStorage.getItem(TRANSACTIONS_KEY)) || [];
-    } catch (error) {
-        console.error('Error parsing transactions:', error);
-        transactions = [];
-    }
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const transactionList = document.getElementById('transaction-list');
     transactionList.innerHTML = '';
     transactions.forEach(transaction => {
         const li = document.createElement('li');
-        li.textContent = `${transaction.description} - ₹${transaction.amount} (${transaction.category}) - ${transaction.date}`;
+        li.textContent = `${transaction.description} - ₹${transaction.amount} (${transaction.category}) - ${transaction.date} - ${transaction.paymentMethod}`;
         transactionList.appendChild(li);
     });
 }
@@ -127,21 +121,28 @@ function setupEventListeners() {
 const TRANSACTIONS_KEY = 'transactions';
 
 function addTransaction() {
-    const description = document.getElementById('description').value.trim();
-    const amount = document.getElementById('amount').value.trim();
-    const date = document.getElementById('date').value.trim();
-    const category = document.getElementById('category').value.trim();
+    const description = document.getElementById('description').value;
+    const amount = document.getElementById('amount').value;
+    const date = document.getElementById('date').value;
+    const category = document.getElementById('category').value;
+    const paymentMethod = document.getElementById('payment-method').value;
 
-    if (!validateInputs(description, amount, date, category)) {
+    if (!description || !amount || !date || !category || !paymentMethod) {
+        alert('Please fill in all fields');
         return;
     }
 
-    const transaction = { description, amount: parseFloat(amount), date, category };
-    saveTransaction(transaction);
+    const transaction = { description, amount, date, category, paymentMethod };
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    transactions.push(transaction);
+    localStorage.setItem('transactions', JSON.stringify(transactions));
 
-    updateUI();
+    loadTransactions();
+    updateBalance();
+    updateCharts();
+    updateGoalProgress();
+    resetForm();
 }
-
 function validateInputs(description, amount, date, category) {
     if (description === '' || amount === '' || date === '' || category === '') {
         alert('Please fill in all fields');
@@ -181,8 +182,8 @@ function resetForm() {
     document.getElementById('amount').value = '';
     document.getElementById('date').value = '';
     document.getElementById('category').value = '';
+    document.getElementById('payment-method').value = '';
 }
-
 function setBudgetGoal() {
     const goalAmount = document.getElementById('goal-amount').value;
     if (!goalAmount) {
@@ -217,39 +218,31 @@ function setupEventListeners() {
 }
 function exportData() {
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    const balance = transactions.reduce((total, transaction) => total + parseFloat(transaction.amount), 0);
+    let csvContent = "Date,Expense Name,Amount,Mode of Payment,Category\n";
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
-    // Add title
-    doc.setFontSize(18);
-    doc.text('BudgetMe Report', 105, 15, null, null, 'center');
-    
-    // Add balance
-    doc.setFontSize(14);
-    doc.text(`Current Balance: ₹${balance.toFixed(2)}`, 20, 30);
-    
-    // Add transactions table
-    doc.setFontSize(12);
-    doc.text('Transactions:', 20, 40);
-    
-    const headers = ['Date', 'Description', 'Category', 'Amount'];
-    const data = transactions.map(t => [t.date, t.description, t.category, `₹${parseFloat(t.amount).toFixed(2)}`]);
-    
-    doc.autoTable({
-        startY: 45,
-        head: [headers],
-        body: data,
-        theme: 'grid',
-        styles: { fontSize: 8 },
-        columnStyles: { 3: { halign: 'right' } }
+    transactions.forEach(transaction => {
+        const row = [
+            transaction.date,
+            transaction.description,
+            transaction.amount,
+            transaction.paymentMethod,
+            transaction.category
+        ].join(",");
+        csvContent += row + "\n";
     });
-    
-    // Save the PDF
-    doc.save('BudgetMe_Report.pdf');
-}
-function searchTransactions() {
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "budget_data.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}function searchTransactions() {
     const searchTerm = document.getElementById('search').value.toLowerCase();
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const filteredTransactions = transactions.filter(transaction => 

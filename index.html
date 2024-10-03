@@ -20,27 +20,25 @@
             <i class="fas fa-bars"></i>
         </button>
     </header>
-    <nav id="main-nav" class="main-nav">
-        <ul>
-            <li><a href="#transaction-form"><i class="fas fa-plus-circle"></i> Add Transaction</a></li>
-            <li><a href="#budget-goals"><i class="fas fa-bullseye"></i> Budget Goals</a></li>
-            <li><a href="#transactions"><i class="fas fa-list"></i> Transactions</a></li>
-            <li><a href="#charts"><i class="fas fa-chart-pie"></i> Charts</a></li>
-            <li><a href="#category-management"><i class="fas fa-tags"></i> Categories</a></li>
-        </ul>
-    </nav>
     <main id="app">
         <section id="balance">
             <h2>Balance: <span id="balance-amount">₹0.00</span></h2>
         </section>
-        <section id="transaction-form">
+        <div id="transaction-form">
             <h3>Add Transaction</h3>
             <input type="text" id="description" placeholder="Description" required>
             <input type="number" id="amount" placeholder="Amount (₹)" required>
             <input type="date" id="date" required>
             <select id="category" required></select>
+            <select id="payment-method" required>
+                <option value="">Select Payment Method</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+            </select>
             <button id="add-transaction">Add Transaction</button>
-        </section>
+        </div>
         <section id="budget-goals">
             <h3>Budget Goal</h3>
             <input type="number" id="goal-amount" placeholder="Goal Amount (₹)">
