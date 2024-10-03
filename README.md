@@ -10,7 +10,7 @@ A simple, mobile-friendly budget tracker web application hosted on GitHub Pages.
 - **Recurring Transactions**: Set up and manage recurring income or expenses
 - **Search and Filter**: Easily find and organize your transactions
 - **Data Visualization**: Visual representations of your financial data using charts
-- **Import/Export**: Backup and restore your data in JSON or CSV format
+- **Export**: Backup your data in CSV format
 - **Offline Functionality**: Full app functionality even without an internet connection
 - **Mobile-Friendly**: Responsive design for a seamless experience on all devices
 - **PWA**: Install as a standalone app on your device
@@ -37,7 +37,7 @@ A simple, mobile-friendly budget tracker web application hosted on GitHub Pages.
 
 5. **Viewing Charts**: Scroll down to see visual representations of your spending habits and trends.
 
-6. **Exporting/Importing Data**: Use the "Export Data" button to download your data, and the "Import Data" button to restore a previous backup.
+6. **Exporting Data**: Use the "Export Data" button to download your data
 
 ## Offline Usage
 
@@ -66,5 +66,6 @@ This project is open source and available under the [MIT License](LICENSE).
 - [Chart.js](https://www.chartjs.org/)
 - [Google Fonts](https://fonts.google.com/)
 - [GitHub Pages](https://pages.github.com/)
+- [Font Awesome](https://fontawesome.com/)
 
 
